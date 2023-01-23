@@ -1,19 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TransactionSyncAPI.DataAccess;
+using TransactionSyncAPI.Interfases;
 
 var builder = WebApplication.CreateBuilder(args);
-
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -29,11 +21,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+//Coonection string to database
 string connectionString = builder.Configuration.GetConnectionString("SqlServerConnectionStrings") ?? "";
-builder.Services.AddDbContext<TransactionContext>(option =>
+
+//Add to dependency injection database context for entity framework core
+builder.Services.AddDbContext<TransactionDbContext>(option =>
 {
     option.UseSqlServer(connectionString);
 });
+
+//Add database context for Dapper
+builder.Services.AddScoped<ITransactionDbContext>(provider => provider.GetService<TransactionDbContext>());
+builder.Services.AddScoped<ITransactionWriteDbConnection, TransactionWriteDbConnection>();
+builder.Services.AddScoped<ITransactionReadDbConnection, TransactionReadDbConnection>();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
