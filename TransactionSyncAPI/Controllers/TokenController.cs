@@ -66,7 +66,12 @@ namespace TransactionSyncAPI.Controllers
         private async Task<UserIndentity> GetUser(string email, string password)
         {
             var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == email && user.Password == password);
-            return new UserIndentity() { Email= email, Password = password };
+            if (user != null)
+            {
+                return new UserIndentity() { Email = user.Email, Password = user.Password };
+            }
+
+            return null;
         }
     }
 }
