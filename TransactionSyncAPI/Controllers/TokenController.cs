@@ -1,22 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using TransactionSyncAPI.Contants;
 using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Models;
 
 namespace TransactionSyncAPI.Controllers
 {
+    [Authorize]
     [Route("api/token")]
     [ApiController]
     public class TokenController : ControllerBase
     {
         public IConfiguration _configuration;
-        private readonly TransactionContext _context;
+        private readonly TransactionDbContext _context;
 
-        public TokenController(IConfiguration config, TransactionContext context)
+        public TokenController(IConfiguration config, TransactionDbContext context)
         {
             _configuration = config;
             _context = context;
@@ -47,7 +50,7 @@ namespace TransactionSyncAPI.Controllers
                         _configuration["Jwt:Issuer"],
                         _configuration["Jwt:Audience"],
                         claims,
-                        expires: DateTime.UtcNow.AddMinutes(10),
+                        expires: DateTime.UtcNow.AddMinutes(AuthenticationInfoContants.JWT_TOKEN_EXPIRATION_TIME_MINUTES),
                         signingCredentials: signIn);
 
                     return Ok(new JwtSecurityTokenHandler().WriteToken(token));
