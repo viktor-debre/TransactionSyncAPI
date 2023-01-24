@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TransactionSyncAPI.DataAccess.Interfases;
-using TransactionSyncAPI.Models;
-using TransactionSyncAPI.SQL;
+using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
@@ -12,28 +9,17 @@ namespace TransactionSyncAPI.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly ITransactionDbContext _dbContext;
-        private readonly ITransactionReadDbConnection _readDbConnection;
-        private readonly ITransactionWriteDbConnection _writeDbConnection;
-        private readonly SQLQueriesReader _sqlQueries;
+        private readonly ITransactionCRUDService _transactionService;
 
-        public TransactionController(
-            ITransactionDbContext dbContext,
-            ITransactionReadDbConnection readDbConnection,
-            ITransactionWriteDbConnection writeDbConnection,
-            SQLQueriesReader sqlQueries)
+        public TransactionController(ITransactionCRUDService transactionService)
         {
-            _dbContext = dbContext;
-            _readDbConnection = readDbConnection;
-            _writeDbConnection = writeDbConnection;
-            _sqlQueries = sqlQueries;
+            _transactionService = transactionService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var query = _sqlQueries.Queries["selectAllTransaction"];
-            var transactions = await _readDbConnection.QueryAsync<Transaction>(query);
+            var transactions = await _transactionService.GetAllTransactionFromDb();
 
             return Ok(transactions);
         }
@@ -41,10 +27,8 @@ namespace TransactionSyncAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            //var query = _sqlQueries.Queries["selectAllTransaction"];
-            //var transaction = await _readDbConnection.QueryFirstOrDefaultAsync<Transaction>(query, id);
+            var transaction = await _transactionService.GetTransactionByIdFromDb(id);
 
-            var transaction = await _dbContext.Transactions.Include(a => a.CreatedByUser).Where(a => a.TransactionId == id).FirstOrDefaultAsync();
             return Ok(transaction);
         }
     }
