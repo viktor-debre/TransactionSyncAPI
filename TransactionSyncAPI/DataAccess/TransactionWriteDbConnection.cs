@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using System.Data;
-using TransactionSyncAPI.Interfases;
+using TransactionSyncAPI.DataAccess.Interfases;
 
 namespace TransactionSyncAPI.DataAccess
 {

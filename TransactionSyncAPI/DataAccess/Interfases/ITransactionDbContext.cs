@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using TransactionSyncAPI.Models;
 
-namespace TransactionSyncAPI.Interfases
+namespace TransactionSyncAPI.DataAccess.Interfases
 {
     public interface ITransactionDbContext
     {

@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using TransactionSyncAPI.Interfases;
+using TransactionSyncAPI.DataAccess.Interfases;
 
 namespace TransactionSyncAPI.DataAccess
 {

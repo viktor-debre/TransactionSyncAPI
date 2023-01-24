@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace TransactionSyncAPI.Interfases
+namespace TransactionSyncAPI.DataAccess.Interfases
 {
     public interface ITransactionWriteDbConnection
     {

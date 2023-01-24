@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Data;
-using TransactionSyncAPI.Interfases;
+using TransactionSyncAPI.DataAccess.Interfases;
 using TransactionSyncAPI.Models;
 
 namespace TransactionSyncAPI.DataAccess
@@ -12,7 +12,7 @@ namespace TransactionSyncAPI.DataAccess
         {
         }
 
-        public virtual DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
         public IDbConnection Connection => Database.GetDbConnection();
