@@ -19,7 +19,6 @@ namespace TransactionSyncAPI.Controllers
             _authService = authService;
         }
 
-        [Route("/[action]")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel userData)
         {

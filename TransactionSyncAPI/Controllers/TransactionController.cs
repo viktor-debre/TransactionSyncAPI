@@ -32,12 +32,20 @@ namespace TransactionSyncAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-
             var query = _sqlQueries.Queries["selectAllTransaction"];
             var transactions = await _readDbConnection.QueryAsync<Transaction>(query);
 
-            //var transactions = await _dbContext.Transactions.Include(t => t.CreatedByUser).ToListAsync();
             return Ok(transactions);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            //var query = _sqlQueries.Queries["selectAllTransaction"];
+            //var transaction = await _readDbConnection.QueryFirstOrDefaultAsync<Transaction>(query, id);
+
+            var transaction = await _dbContext.Transactions.Include(a => a.CreatedByUser).Where(a => a.TransactionId == id).FirstOrDefaultAsync();
+            return Ok(transaction);
         }
     }
 }

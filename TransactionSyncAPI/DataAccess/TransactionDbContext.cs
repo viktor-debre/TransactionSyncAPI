@@ -24,10 +24,6 @@ namespace TransactionSyncAPI.DataAccess
 
             modelBuilder.Entity<Transaction>().ToTable("transactions")
                 .HasKey(key => key.TransactionId);
-            modelBuilder.Entity<Transaction>()
-                .HasOne<User>(x => x.CreatedByUser)
-                .WithMany(u => u.Transactions)
-                .HasForeignKey(u => u.UserId);
         }
     }
 }
