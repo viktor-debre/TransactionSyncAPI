@@ -1,0 +1,3 @@
+﻿{
+  "selectAllTransaction": "SELECT * FROM transactions t inner join users u on t.UserId = u.Id"
+}
