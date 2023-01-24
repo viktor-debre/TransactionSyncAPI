@@ -40,7 +40,7 @@ DependencyInjection.AddDapperDbConnections(builder.Services);
 builder.Services.AddSingleton<SQLQueriesReader>();
 
 //Add other services
-DependencyInjection.AddServises(builder.Services);
+DependencyInjection.AddServices(builder.Services);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
