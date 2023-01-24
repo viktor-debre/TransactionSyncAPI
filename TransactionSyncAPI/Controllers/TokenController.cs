@@ -8,25 +8,31 @@ using System.Text;
 using TransactionSyncAPI.Contants;
 using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Models;
+using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
-    [Authorize]
     [Route("api/token")]
     [ApiController]
+    [AllowAnonymous]
     public class TokenController : ControllerBase
     {
         public IConfiguration _configuration;
         private readonly TransactionDbContext _context;
+        private readonly IAuthenticationJWTService _jwtService;
 
-        public TokenController(IConfiguration config, TransactionDbContext context)
+        public TokenController(
+            IConfiguration config,
+            TransactionDbContext context,
+            IAuthenticationJWTService jwtService)
         {
             _configuration = config;
             _context = context;
+            _jwtService = jwtService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(UserIndentity userData)
+        public async Task<IActionResult> Post(LoginModel userData)
         {
             if (userData != null && userData.Email != null && userData.Password != null)
             {
@@ -66,12 +72,12 @@ namespace TransactionSyncAPI.Controllers
             }
         }
 
-        private async Task<UserIndentity> GetUser(string email, string password)
+        private async Task<LoginModel> GetUser(string email, string password)
         {
             var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == email && user.Password == password);
             if (user != null)
             {
-                return new UserIndentity() { Email = user.Email, Password = user.Password };
+                return new LoginModel() { Email = user.Email, Password = user.Password };
             }
 
             return null;
