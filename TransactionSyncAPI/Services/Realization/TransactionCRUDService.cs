@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using TransactionSyncAPI.DataAccess.Interfases;
 using TransactionSyncAPI.Models;
 using TransactionSyncAPI.Services.Intarfaces;
@@ -36,6 +37,20 @@ namespace TransactionSyncAPI.Services.Realization
                 .FirstOrDefaultAsync();
 
             return transaction;
+        }
+
+        public async Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string status = null)
+        {
+            //var typesList = types.Select(x => x.ToString());
+            var parameters = new DynamicParameters();
+            parameters.Add("@Types", types);
+            parameters.Add("@Status", status);
+
+            var sqlQuery = "SELECT * FROM transactions WHERE Type IN @Types AND Status = @Status";
+
+            var transactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery, parameters);
+
+            return transactions;
         }
     }
 }
