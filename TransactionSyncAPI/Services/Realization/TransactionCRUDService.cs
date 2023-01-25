@@ -2,7 +2,6 @@
 using TransactionSyncAPI.DataAccess.Interfases;
 using TransactionSyncAPI.Models;
 using TransactionSyncAPI.Services.Intarfaces;
-using TransactionSyncAPI.SQL;
 
 namespace TransactionSyncAPI.Services.Realization
 {
@@ -11,24 +10,21 @@ namespace TransactionSyncAPI.Services.Realization
         private readonly ITransactionDbContext _dbContext;
         private readonly ITransactionReadDbConnection _readDbConnection;
         private readonly ITransactionWriteDbConnection _writeDbConnection;
-        private readonly SQLQueriesReader _sqlQueries;
 
         public TransactionCRUDService(
             ITransactionDbContext dbContext,
             ITransactionReadDbConnection readDbConnection,
-            ITransactionWriteDbConnection writeDbConnection,
-            SQLQueriesReader sqlQueries)
+            ITransactionWriteDbConnection writeDbConnection)
         {
             _dbContext = dbContext;
             _readDbConnection = readDbConnection;
             _writeDbConnection = writeDbConnection;
-            _sqlQueries = sqlQueries;
         }
 
         public async Task<IEnumerable<Transaction>> GetAllTransactionFromDb()
         {
-            var query = _sqlQueries.Queries["selectAllTransaction"];
-            var transactions = await _readDbConnection.QueryAsync<Transaction>(query);
+            var sqlQuery = "SELECT * FROM transactions";
+            var transactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery);
             return transactions;
         }
 

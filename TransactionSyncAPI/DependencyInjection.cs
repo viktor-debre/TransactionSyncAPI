@@ -2,7 +2,6 @@
 using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Services.Intarfaces;
 using TransactionSyncAPI.Services.Realization;
-using TransactionSyncAPI.SQL;
 
 namespace TransactionSyncAPI
 {
@@ -20,11 +19,6 @@ namespace TransactionSyncAPI
             services.AddScoped<ITransactionDbContext>(provider => provider.GetService<TransactionDbContext>());
             services.AddScoped<ITransactionWriteDbConnection, TransactionWriteDbConnection>();
             services.AddScoped<ITransactionReadDbConnection, TransactionReadDbConnection>();
-        }
-
-        public static void AddSqlQueriesProvider(IServiceCollection services)
-        {
-            services.AddSingleton<SQLQueriesReader>();
         }
     }
 }

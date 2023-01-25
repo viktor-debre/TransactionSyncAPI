@@ -16,9 +16,9 @@ namespace TransactionSyncAPI.Services.Realization
             _jwtService = jwtService;
         }
 
-        public async Task<string> AuthenticateUser(string email, string password)
+        public async Task<string?> AuthenticateUser(LoginModel userData)
         {
-            var user = await GetUser(email, password);
+            var user = await GetUserWithRightPassword(userData.Email, userData.Password);
             if (user != null)
             {
                 var token = _jwtService.GenerateToken(user);
@@ -28,9 +28,44 @@ namespace TransactionSyncAPI.Services.Realization
             return null;
         }
 
-        private async Task<User> GetUser(string email, string password)
+        public async Task<User?> RegisterUser(RegisterUserModel registerUser)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == email && user.Password == password);
+            var user = await GetUserByEmail(registerUser.Email);
+
+            if (user == null)
+            {
+                var newUser = new User()
+                {
+                    Email = registerUser.Email,
+                    Password = registerUser.Password,
+                    FirstName = registerUser.FirstName,
+                    LastName = registerUser.LastName
+                };
+
+                await _context.Users.AddAsync(newUser);
+                await _context.SaveChangesAsync();
+
+                return newUser;
+            }
+
+            return null;
+        }
+
+        private async Task<User?> GetUserWithRightPassword(string email, string password)
+        {
+            var user = await GetUserByEmail(email);
+
+            if (user != null && user.Password == password)
+            {
+                return user;
+            }
+
+            return null;
+        }
+
+        private async Task<User?> GetUserByEmail(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
 
             return user;
         }

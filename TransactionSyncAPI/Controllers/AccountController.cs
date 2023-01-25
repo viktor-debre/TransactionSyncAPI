@@ -5,7 +5,7 @@ using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
-    [Route("api/account")]
+    [Route("api/account/[action]")]
     [ApiController]
     [AllowAnonymous]
     public class AccountController : ControllerBase
@@ -19,9 +19,10 @@ namespace TransactionSyncAPI.Controllers
         }
 
         [HttpPost]
+        [ActionName("login")]
         public async Task<IActionResult> Login(LoginModel userData)
         {
-            var token = await _authService.AuthenticateUser(userData.Email, userData.Password);
+            var token = await _authService.AuthenticateUser(userData);
             if (token != null)
             {
                 return Ok(token);
@@ -30,6 +31,20 @@ namespace TransactionSyncAPI.Controllers
             {
                 return BadRequest("Invalid credentials");
             }
+        }
+
+        [HttpPost]
+        [ActionName("register")]
+        public async Task<IActionResult> Register(RegisterUserModel userData)
+        {
+            var user = await _authService.RegisterUser(userData);
+
+            if (user != null)
+            {
+                return Ok(user);
+            }
+
+            return BadRequest("Existing user");
         }
     }
 }

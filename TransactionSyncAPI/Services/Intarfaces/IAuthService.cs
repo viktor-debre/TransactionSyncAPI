@@ -1,7 +1,11 @@
-﻿namespace TransactionSyncAPI.Services.Intarfaces
+﻿using TransactionSyncAPI.Models;
+
+namespace TransactionSyncAPI.Services.Intarfaces
 {
     public interface IAuthService
     {
-        public Task<string> AuthenticateUser(string email, string password);
+        public Task<string?> AuthenticateUser(LoginModel user);
+
+        public Task<User?> RegisterUser(RegisterUserModel registerUser);
     }
 }
