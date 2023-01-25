@@ -28,8 +28,12 @@ namespace TransactionSyncAPI.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var transaction = await _transactionService.GetTransactionByIdFromDb(id);
+            if (transaction != null)
+            {
+                return Ok(transaction);
+            }
 
-            return Ok(transaction);
+            return BadRequest("Wrong id");
         }
     }
 }

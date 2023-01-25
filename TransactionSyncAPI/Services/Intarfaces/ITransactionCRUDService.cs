@@ -6,6 +6,6 @@ namespace TransactionSyncAPI.Services.Intarfaces
     {
         public Task<IEnumerable<Transaction>> GetAllTransactionFromDb();
 
-        public Task<Transaction> GetTransactionByIdFromDb(int id);
+        public Task<Transaction?> GetTransactionByIdFromDb(int id);
     }
 }

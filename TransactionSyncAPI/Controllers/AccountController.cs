@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Models;
 using TransactionSyncAPI.Services.Intarfaces;
 

@@ -32,12 +32,13 @@ namespace TransactionSyncAPI.Services.Realization
             return transactions;
         }
 
-        public async Task<Transaction> GetTransactionByIdFromDb(int id)
+        public async Task<Transaction?> GetTransactionByIdFromDb(int id)
         {
             var transaction = await _dbContext.Transactions
                 .Include(a => a.CreatedByUser)
                 .Where(a => a.TransactionId == id)
                 .FirstOrDefaultAsync();
+
             return transaction;
         }
     }
