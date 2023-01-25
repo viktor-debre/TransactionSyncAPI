@@ -41,12 +41,24 @@ namespace TransactionSyncAPI.Services.Realization
 
         public async Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string status = null)
         {
-            //var typesList = types.Select(x => x.ToString());
             var parameters = new DynamicParameters();
             parameters.Add("@Types", types);
             parameters.Add("@Status", status);
 
-            var sqlQuery = "SELECT * FROM transactions WHERE Type IN @Types AND Status = @Status";
+
+            var sqlQuery = "SELECT * FROM transactions";
+            if (types.Count() != 0 && status != null)
+            {
+                sqlQuery += " WHERE Type IN @Types AND Status = @Status";
+            }
+            else if(types.Count() != 0)
+            {
+                sqlQuery += " WHERE Type IN @Types";
+            }
+            else
+            {
+                sqlQuery += " WHERE Status = @Status";
+            }
 
             var transactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery, parameters);
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
@@ -38,7 +40,9 @@ namespace TransactionSyncAPI.Controllers
 
         [HttpGet]
         [Route("/transactions/filtered")]
-        public async Task<IActionResult> Get([FromQuery] IEnumerable<string> types, [FromQuery] string status)
+        public async Task<IActionResult> Get(
+            [FromQuery][DefaultValue(null)] IEnumerable<string> types,
+            [FromQuery][Required(AllowEmptyStrings = true)] string status)
         {
             var transactions = await _transactionService.GetFilteredTransactions(types, status);
 
