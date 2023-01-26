@@ -17,7 +17,7 @@ namespace TransactionSyncAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FindUserByName(string firstName = null, string lastName = null)
+        public async Task<IActionResult> FindUserByName(string? firstName = null, string? lastName = null)
         {
             var user = await _userService.FindUserByName(firstName, lastName);
 

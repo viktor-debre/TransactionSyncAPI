@@ -8,7 +8,7 @@ namespace TransactionSyncAPI.Services.Intarfaces
 
         public Task<Transaction?> GetTransactionByIdFromDb(int id);
 
-        public Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string status = null);
+        public Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string? status = null);
 
         public Task<Transaction?> SetNewStatusById(int id, string status);
     }

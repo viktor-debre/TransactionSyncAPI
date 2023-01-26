@@ -39,7 +39,7 @@ namespace TransactionSyncAPI.Services.Realization
             return transaction;
         }
 
-        public async Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string status = null)
+        public async Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string? status = null)
         {
             var parameters = new DynamicParameters();
             parameters.Add("@Types", types);
@@ -55,7 +55,7 @@ namespace TransactionSyncAPI.Services.Realization
             {
                 sqlQuery += " WHERE Type IN @Types";
             }
-            else
+            else if (status != null)
             {
                 sqlQuery += " WHERE Status = @Status";
             }

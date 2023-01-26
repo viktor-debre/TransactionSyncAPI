@@ -41,8 +41,8 @@ namespace TransactionSyncAPI.Controllers
         [HttpGet]
         [Route("/transactions/filtered")]
         public async Task<IActionResult> Get(
-            [FromQuery][DefaultValue(null)] IEnumerable<string> types,
-            [FromQuery][DefaultValue(null)] string status)
+            [FromHeader][DefaultValue(null)] IEnumerable<string> types,
+            [FromHeader][DefaultValue(null)] string? status)
         {
             var transactions = await _transactionService.GetFilteredTransactions(types, status);
 

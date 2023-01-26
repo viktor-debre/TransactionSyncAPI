@@ -13,7 +13,7 @@ namespace TransactionSyncAPI.Services.Realization
             _readDbConnection = readDbConnection;
         }
 
-        public async Task<IEnumerable<User>> FindUserByName(string firstName, string lastName)
+        public async Task<IEnumerable<User>> FindUserByName(string? firstName, string? lastName)
         {
             firstName = firstName ?? string.Empty;
             lastName = lastName ?? string.Empty;
