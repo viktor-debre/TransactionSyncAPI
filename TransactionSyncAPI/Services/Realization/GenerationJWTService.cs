@@ -8,16 +8,16 @@ using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Services.Realization
 {
-    public class AuthenticationJWTService : IAuthenticationJWTService
+    public class GenerationJWTService : IGenerationJWTService
     {
         private readonly IConfiguration _configuration;
 
-        public AuthenticationJWTService(IConfiguration configuration)
+        public GenerationJWTService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<string> GenerateToken(User user)
+        public string? GenerateToken(User user)
         {
             if (user != null)
             {

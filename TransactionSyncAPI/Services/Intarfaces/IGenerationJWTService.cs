@@ -2,8 +2,8 @@
 
 namespace TransactionSyncAPI.Services.Intarfaces
 {
-    public interface IAuthenticationJWTService
+    public interface IGenerationJWTService
     {
-        public Task<string> GenerateToken(User user);
+        public string? GenerateToken(User user);
     }
 }

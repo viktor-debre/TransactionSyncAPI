@@ -5,7 +5,6 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using TransactionSyncAPI;
 using TransactionSyncAPI.DataAccess;
-using TransactionSyncAPI.SQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,11 +35,8 @@ builder.Services.AddDbContext<TransactionDbContext>(option =>
 //Add database context for Dapper
 DependencyInjection.AddDapperDbConnections(builder.Services);
 
-//Add sql queries provider
-builder.Services.AddSingleton<SQLQueriesReader>();
-
 //Add other services
-DependencyInjection.AddServises(builder.Services);
+DependencyInjection.AddServices(builder.Services);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

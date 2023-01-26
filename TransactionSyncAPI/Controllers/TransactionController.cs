@@ -1,42 +1,51 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TransactionSyncAPI.DataAccess.Interfases;
-using TransactionSyncAPI.Models;
-using TransactionSyncAPI.SQL;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly ITransactionDbContext _dbContext;
-        private readonly ITransactionReadDbConnection _readDbConnection;
-        private readonly ITransactionWriteDbConnection _writeDbConnection;
-        private readonly SQLQueriesReader _sqlQueries;
+        private readonly ITransactionCRUDService _transactionService;
 
-        public TransactionController(
-            ITransactionDbContext dbContext,
-            ITransactionReadDbConnection readDbConnection,
-            ITransactionWriteDbConnection writeDbConnection,
-            SQLQueriesReader sqlQueries)
+        public TransactionController(ITransactionCRUDService transactionService)
         {
-            _dbContext = dbContext;
-            _readDbConnection = readDbConnection;
-            _writeDbConnection = writeDbConnection;
-            _sqlQueries = sqlQueries;
+            _transactionService = transactionService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            var transactions = await _transactionService.GetAllTransactionFromDb();
 
-            var query = _sqlQueries.Queries["selectAllTransaction"];
-            var transactions = await _readDbConnection.QueryAsync<Transaction>(query);
+            return Ok(transactions);
+        }
 
-            //var transactions = await _dbContext.Transactions.Include(t => t.CreatedByUser).ToListAsync();
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var transaction = await _transactionService.GetTransactionByIdFromDb(id);
+            if (transaction != null)
+            {
+                return Ok(transaction);
+            }
+
+            return BadRequest("Wrong id");
+        }
+
+        [HttpGet]
+        [Route("/transactions/filtered")]
+        public async Task<IActionResult> Get(
+            [FromQuery][DefaultValue(null)] IEnumerable<string> types,
+            [FromQuery][Required(AllowEmptyStrings = true)] string status)
+        {
+            var transactions = await _transactionService.GetFilteredTransactions(types, status);
+
             return Ok(transactions);
         }
     }
