@@ -11,7 +11,9 @@ namespace TransactionSyncAPI
         {
             services.AddScoped<IGenerationJWTService, GenerationJWTService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<ITransactionCRUDService, TransactionCRUDService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<ICsvFilesService, CsvFilesService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         public static void AddDapperDbConnections(IServiceCollection services)
