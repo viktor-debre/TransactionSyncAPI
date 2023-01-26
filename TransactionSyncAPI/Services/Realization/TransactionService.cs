@@ -6,13 +6,13 @@ using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Services.Realization
 {
-    public class TransactionCRUDService : ITransactionCRUDService
+    public class TransactionService : ITransactionService
     {
         private readonly ITransactionDbContext _dbContext;
         private readonly ITransactionReadDbConnection _readDbConnection;
         private readonly ITransactionWriteDbConnection _writeDbConnection;
 
-        public TransactionCRUDService(
+        public TransactionService(
             ITransactionDbContext dbContext,
             ITransactionReadDbConnection readDbConnection,
             ITransactionWriteDbConnection writeDbConnection)
@@ -63,6 +63,24 @@ namespace TransactionSyncAPI.Services.Realization
             var transactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery, parameters);
 
             return transactions;
+        }
+
+        public async Task<Transaction?> SetNewStatusById(int id, string status)
+        {
+            var sqlUpdateQuery = "UPDATE transactions SET Status = @Status WHERE TransactionId = @Id";
+            var parameters = new { Status = status, Id = id };
+            var rowAffected = await _writeDbConnection.ExecuteAsync(sqlUpdateQuery, parameters);
+
+            if (rowAffected != 0)
+            {
+                var sqlFindQuery = "SELECT * FROM transactions WHERE TransactionId = @Id";
+                var parameterForSearch = new { Id = id };
+                var transaction = await _readDbConnection.QueryFirstOrDefaultAsync<Transaction>(sqlFindQuery, parameterForSearch);
+
+                return transaction;
+            }
+            
+            return null;
         }
     }
 }
