@@ -6,6 +6,7 @@ using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
+    [Authorize]
     [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
