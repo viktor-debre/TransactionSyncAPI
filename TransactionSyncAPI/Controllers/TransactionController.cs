@@ -46,7 +46,7 @@ namespace TransactionSyncAPI.Controllers
             return Ok(transactions);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> UpdateStatus(int id, string status)
         {
             var transaction = await _transactionService.SetNewStatusById(id, status);
