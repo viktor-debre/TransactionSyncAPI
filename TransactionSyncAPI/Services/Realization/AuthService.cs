@@ -30,6 +30,11 @@ namespace TransactionSyncAPI.Services.Realization
 
         public async Task<User?> RegisterUser(RegisterUserModel registerUser)
         {
+            if (string.IsNullOrEmpty( registerUser.Email) || string.IsNullOrEmpty(registerUser.Password))
+            {
+                return null;
+            }
+
             var user = await GetUserByEmail(registerUser.Email);
 
             if (user == null)
