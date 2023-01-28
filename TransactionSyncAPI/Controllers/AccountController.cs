@@ -44,7 +44,7 @@ namespace TransactionSyncAPI.Controllers
                 return Ok(user);
             }
 
-            return BadRequest("Existing user");
+            return BadRequest("Invalid credential");
         }
     }
 }

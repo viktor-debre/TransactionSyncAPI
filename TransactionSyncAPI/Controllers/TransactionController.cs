@@ -6,14 +6,13 @@ using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
-    [Authorize]
     [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly ITransactionCRUDService _transactionService;
+        private readonly ITransactionService _transactionService;
 
-        public TransactionController(ITransactionCRUDService transactionService)
+        public TransactionController(ITransactionService transactionService)
         {
             _transactionService = transactionService;
         }
@@ -35,18 +34,29 @@ namespace TransactionSyncAPI.Controllers
                 return Ok(transaction);
             }
 
-            return BadRequest("Wrong id");
+            return BadRequest("Transaction with this id does not exist.");
         }
 
         [HttpGet]
         [Route("/transactions/filtered")]
-        public async Task<IActionResult> Get(
-            [FromQuery][DefaultValue(null)] IEnumerable<string> types,
-            [FromQuery][Required(AllowEmptyStrings = true)] string status)
+        public async Task<IActionResult> Get([FromQuery]IEnumerable<string> types, [FromQuery] string? status)
         {
             var transactions = await _transactionService.GetFilteredTransactions(types, status);
 
             return Ok(transactions);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateStatus(int id, string status)
+        {
+            var transaction = await _transactionService.SetNewStatusById(id, status);
+
+            if (transaction != null)
+            {
+                return Ok(transaction);
+            }
+
+            return BadRequest("Wrong id");
         }
     }
 }
