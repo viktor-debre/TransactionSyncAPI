@@ -24,6 +24,10 @@ namespace TransactionSyncAPI.DataAccess
 
             modelBuilder.Entity<Transaction>().ToTable("transactions")
                 .HasKey(key => key.TransactionId);
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.TransactionId)
+                .ValueGeneratedOnAdd();
+
         }
     }
 }

@@ -6,7 +6,6 @@ using TransactionSyncAPI.Services.Intarfaces;
 
 namespace TransactionSyncAPI.Controllers
 {
-    [Authorize]
     [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
@@ -40,9 +39,7 @@ namespace TransactionSyncAPI.Controllers
 
         [HttpGet]
         [Route("/transactions/filtered")]
-        public async Task<IActionResult> Get(
-            [FromHeader][DefaultValue(null)] IEnumerable<string> types,
-            [FromHeader][DefaultValue(null)] string? status)
+        public async Task<IActionResult> Get([FromQuery]IEnumerable<string> types, [FromQuery] string? status)
         {
             var transactions = await _transactionService.GetFilteredTransactions(types, status);
 
