@@ -19,10 +19,13 @@ namespace TransactionSyncAPI.Services.Realization
 
         public string? GenerateToken(User user)
         {
-            if (user != null)
+            if (user == null)
             {
-                //create claims details based on the user information
-                var claims = new[] {
+                return null;
+            }
+
+            //create claims details based on the user information
+            var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
@@ -31,23 +34,17 @@ namespace TransactionSyncAPI.Services.Realization
 
                     };
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                    _configuration["Jwt:Issuer"],
-                    _configuration["Jwt:Audience"],
-                    claims,
-                    expires: DateTime.UtcNow.AddMinutes(AuthenticationInfoContants.JWT_TOKEN_EXPIRATION_TIME_MINUTES),
-                    signingCredentials: signIn);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(AuthenticationInfoContants.JWT_TOKEN_EXPIRATION_TIME_MINUTES),
+                signingCredentials: signIn);
 
-                var result = new JwtSecurityTokenHandler().WriteToken(token);
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-
+            var result = new JwtSecurityTokenHandler().WriteToken(token);
+            return result;
         }
     }
 }
