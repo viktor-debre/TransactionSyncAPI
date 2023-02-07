@@ -19,13 +19,13 @@ namespace TransactionSyncAPI.Services.Realization
         public async Task<string?> AuthenticateUser(LoginModel userData)
         {
             var user = await GetUserWithRightPassword(userData.Email, userData.Password);
-            if (user != null)
+            if (user == null)
             {
-                var token = _jwtService.GenerateToken(user);
-                return token;
+                return null;
             }
 
-            return null;
+            var token = _jwtService.GenerateToken(user);
+            return token;
         }
 
         public async Task<User?> RegisterUser(RegisterUserModel registerUser)
@@ -37,23 +37,23 @@ namespace TransactionSyncAPI.Services.Realization
 
             var user = await GetUserByEmail(registerUser.Email);
 
-            if (user == null)
+            if (user != null)
             {
-                var newUser = new User()
-                {
-                    Email = registerUser.Email,
-                    Password = registerUser.Password,
-                    FirstName = registerUser.FirstName,
-                    LastName = registerUser.LastName
-                };
-
-                await _context.Users.AddAsync(newUser);
-                await _context.SaveChangesAsync();
-
-                return newUser;
+                return null;
             }
 
-            return null;
+            var newUser = new User()
+            {
+                Email = registerUser.Email,
+                Password = registerUser.Password,
+                FirstName = registerUser.FirstName,
+                LastName = registerUser.LastName
+            };
+
+            await _context.Users.AddAsync(newUser);
+            await _context.SaveChangesAsync();
+
+            return newUser;
         }
 
         private async Task<User?> GetUserWithRightPassword(string email, string password)
