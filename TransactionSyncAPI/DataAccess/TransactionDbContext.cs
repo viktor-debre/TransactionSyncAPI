@@ -26,7 +26,7 @@ namespace TransactionSyncAPI.DataAccess
                 .HasKey(key => key.TransactionId);
             modelBuilder.Entity<Transaction>()
                 .Property(t => t.TransactionId)
-                .ValueGeneratedOnAdd();
+                .ValueGeneratedNever();
 
         }
     }

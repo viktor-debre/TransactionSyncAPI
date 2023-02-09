@@ -11,8 +11,8 @@ using TransactionSyncAPI.DataAccess;
 namespace TransactionSyncAPI.Migrations
 {
     [DbContext(typeof(TransactionDbContext))]
-    [Migration("20230123221010_AddTrasactionEntity")]
-    partial class AddTrasactionEntity
+    [Migration("20230209122908_AddTransactionsTableAndEncriptedUserPassword")]
+    partial class AddTransactionsTableAndEncriptedUserPassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,10 +27,7 @@ namespace TransactionSyncAPI.Migrations
             modelBuilder.Entity("TransactionSyncAPI.Models.Transaction", b =>
                 {
                     b.Property<int>("TransactionId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -74,7 +71,11 @@ namespace TransactionSyncAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -86,17 +87,12 @@ namespace TransactionSyncAPI.Migrations
             modelBuilder.Entity("TransactionSyncAPI.Models.Transaction", b =>
                 {
                     b.HasOne("TransactionSyncAPI.Models.User", "CreatedByUser")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CreatedByUser");
-                });
-
-            modelBuilder.Entity("TransactionSyncAPI.Models.User", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

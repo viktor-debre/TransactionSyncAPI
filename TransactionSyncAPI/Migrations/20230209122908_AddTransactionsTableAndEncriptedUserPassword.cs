@@ -5,7 +5,7 @@
 namespace TransactionSyncAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTrasactionEntity : Migration
+    public partial class AddTransactionsTableAndEncriptedUserPassword : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,18 @@ namespace TransactionSyncAPI.Migrations
                 name: "Users",
                 newName: "users");
 
+            migrationBuilder.RenameColumn(
+                name: "Password",
+                table: "users",
+                newName: "PasswordSalt");
+
+            migrationBuilder.AddColumn<string>(
+                name: "PasswordHash",
+                table: "users",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.AddPrimaryKey(
                 name: "PK_users",
                 table: "users",
@@ -27,8 +39,7 @@ namespace TransactionSyncAPI.Migrations
                 name: "transactions",
                 columns: table => new
                 {
-                    TransactionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TransactionId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -61,9 +72,18 @@ namespace TransactionSyncAPI.Migrations
                 name: "PK_users",
                 table: "users");
 
+            migrationBuilder.DropColumn(
+                name: "PasswordHash",
+                table: "users");
+
             migrationBuilder.RenameTable(
                 name: "users",
                 newName: "Users");
+
+            migrationBuilder.RenameColumn(
+                name: "PasswordSalt",
+                table: "Users",
+                newName: "Password");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Users",

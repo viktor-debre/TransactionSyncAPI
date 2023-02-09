@@ -24,10 +24,7 @@ namespace TransactionSyncAPI.Migrations
             modelBuilder.Entity("TransactionSyncAPI.Models.Transaction", b =>
                 {
                     b.Property<int>("TransactionId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
 
                     b.Property<string>("Content")
                         .IsRequired()
