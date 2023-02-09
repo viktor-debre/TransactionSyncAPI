@@ -30,7 +30,7 @@ namespace TransactionSyncAPI.Services.Realization
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("Email", user.Email),
-                        new Claim("Password", user.Password)
+                        new Claim("Password", user.PasswordHash)
 
                     };
 

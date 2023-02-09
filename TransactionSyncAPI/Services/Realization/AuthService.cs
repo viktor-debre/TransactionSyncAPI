@@ -2,6 +2,7 @@
 using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Models;
 using TransactionSyncAPI.Services.Intarfaces;
+using TransactionSyncAPI.Services.Intarfaces.InternalServices;
 
 namespace TransactionSyncAPI.Services.Realization
 {
@@ -9,17 +10,29 @@ namespace TransactionSyncAPI.Services.Realization
     {
         private readonly TransactionDbContext _context;
         private readonly IGenerationJWTService _jwtService;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public AuthService(TransactionDbContext context, IGenerationJWTService jwtService)
+        public AuthService(
+            TransactionDbContext context,
+            IGenerationJWTService jwtService,
+            IPasswordHasher passwordHasher)
         {
             _context = context;
             _jwtService = jwtService;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<string?> AuthenticateUser(LoginModel userData)
         {
-            var user = await GetUserWithRightPassword(userData.Email, userData.Password);
+            var user = await GetUserByEmail(userData.Email);
+
             if (user == null)
+            {
+                return null;
+            }
+
+            var passwordHash = _passwordHasher.ComputeHash(userData.Password, user.PasswordSalt);
+            if( passwordHash != user.PasswordHash)
             {
                 return null;
             }
@@ -28,14 +41,14 @@ namespace TransactionSyncAPI.Services.Realization
             return token;
         }
 
-        public async Task<User?> RegisterUser(RegisterUserModel registerUser)
+        public async Task<User?> RegisterUser(RegisterUserModel registerData)
         {
-            if (string.IsNullOrEmpty( registerUser.Email) || string.IsNullOrEmpty(registerUser.Password))
+            if (string.IsNullOrEmpty( registerData.Email) || string.IsNullOrEmpty(registerData.Password))
             {
                 return null;
             }
 
-            var user = await GetUserByEmail(registerUser.Email);
+            var user = await GetUserByEmail(registerData.Email);
 
             if (user != null)
             {
@@ -44,28 +57,18 @@ namespace TransactionSyncAPI.Services.Realization
 
             var newUser = new User()
             {
-                Email = registerUser.Email,
-                Password = registerUser.Password,
-                FirstName = registerUser.FirstName,
-                LastName = registerUser.LastName
+                Email = registerData.Email,
+                PasswordSalt = _passwordHasher.GenerateSalt(),
+                FirstName = registerData.FirstName,
+                LastName = registerData.LastName
             };
+
+            newUser.PasswordHash = _passwordHasher.ComputeHash(registerData.Password, newUser.PasswordSalt);
 
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
 
             return newUser;
-        }
-
-        private async Task<User?> GetUserWithRightPassword(string email, string password)
-        {
-            var user = await GetUserByEmail(email);
-
-            if (user != null && user.Password == password)
-            {
-                return user;
-            }
-
-            return null;
         }
 
         private async Task<User?> GetUserByEmail(string email)

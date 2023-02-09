@@ -2,6 +2,8 @@
 using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Services.Intarfaces;
 using TransactionSyncAPI.Services.Realization;
+using TransactionSyncAPI.Services.Intarfaces.InternalServices;
+using TransactionSyncAPI.Services.Realization.InternalServices;
 
 namespace TransactionSyncAPI
 {
@@ -14,6 +16,9 @@ namespace TransactionSyncAPI
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ICsvFilesService, CsvFilesService>();
             services.AddScoped<IUserService, UserService>();
+
+            //internal services
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
         }
 
         public static void AddDapperDbConnections(IServiceCollection services)

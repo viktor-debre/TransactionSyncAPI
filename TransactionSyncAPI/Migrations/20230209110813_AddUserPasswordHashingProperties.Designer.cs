@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TransactionSyncAPI.DataAccess;
 
@@ -10,9 +11,11 @@ using TransactionSyncAPI.DataAccess;
 namespace TransactionSyncAPI.Migrations
 {
     [DbContext(typeof(TransactionDbContext))]
-    partial class TransactionContextModelSnapshot : ModelSnapshot
+    [Migration("20230209110813_AddUserPasswordHashingProperties")]
+    partial class AddUserPasswordHashingProperties
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
