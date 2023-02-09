@@ -86,31 +86,30 @@ namespace TransactionSyncAPI.Services.Realization
         public async Task<IEnumerable<Transaction>> UpdateAndAddNewTransactions(IEnumerable<Transaction> transactions)
         {
             var sqlQuery = "SELECT * FROM transactions";
-            var sqlQueryFindTransaction = sqlQuery + " WHERE TransactionId = @TransactionId";
-            var sqlQueryForUpdating = "UPDATE transactions SET Content = @Content, Status = @Status, Type = @Type, UserId = @UserId WHERE TransactionId = @TransactionId";
-            var sqlQueryForInserting = "INSERT INTO transactions (Content, Status, Type, UserId) Values (@Content, @Status, @Type, @UserId)";
+
+            string sqlQueryForSync = @"
+            MERGE transactions AS T
+            USING (VALUES (@TransactionId, @Content, @Status, @Type, @UserId)) as S(TransactionId, Content, Status, Type, UserId)
+            ON T.TransactionId = S.TransactionId
+            WHEN MATCHED THEN
+                UPDATE SET T.Content = S.Content, T.Status = S.Status, T.Type = S.Type, T.UserId = S.UserId
+            WHEN NOT MATCHED THEN
+                INSERT (TransactionId, Content, Status, Type, UserId)
+                Values (S.TransactionId, S.Content, S.Status, S.Type, S.UserId);";
 
             foreach (var transaction in transactions)
             {
-                var parametersForSearch = new { TransactionId = transaction.TransactionId };
-                var transactionInDb = await _readDbConnection.QueryFirstOrDefaultAsync<Transaction>(sqlQueryFindTransaction, parametersForSearch);
-                var parametersForUpdateOrAdding = new 
-                { 
+                var parametersForUpdateOrAdding = new
+                {
                     TransactionId = transaction.TransactionId,
                     Content = transaction.Content,
                     Status = transaction.Status,
                     Type = transaction.Type,
                     UserId = transaction.UserId
                 };
-                if (transactionInDb != null)
-                {
-                    await _writeDbConnection.ExecuteAsync(sqlQueryForUpdating, parametersForUpdateOrAdding);
-                }
-                else
-                {
-                    await _writeDbConnection.ExecuteAsync(sqlQueryForInserting, parametersForUpdateOrAdding);
-                }
+                await _writeDbConnection.ExecuteAsync(sqlQueryForSync, parametersForUpdateOrAdding);
             }
+
             var resultTransactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery) ?? new List<Transaction>();
 
             return resultTransactions;
