@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using TransactionSyncAPI.Services.Intarfaces.InternalServices;
+using TransactionSyncAPI.Services.Interfaces.InternalServices;
 
 namespace TransactionSyncAPI.Services.Realization.InternalServices
 {

@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using TransactionSyncAPI.Contants;
 using TransactionSyncAPI.Models;
-using TransactionSyncAPI.Services.Intarfaces;
+using TransactionSyncAPI.Services.Interfaces;
 
 namespace TransactionSyncAPI.Services.Realization
 {

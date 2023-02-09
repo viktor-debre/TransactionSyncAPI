@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TransactionSyncAPI.DataAccess;
 using TransactionSyncAPI.Models;
-using TransactionSyncAPI.Services.Intarfaces;
-using TransactionSyncAPI.Services.Intarfaces.InternalServices;
+using TransactionSyncAPI.Services.Interfaces;
+using TransactionSyncAPI.Services.Interfaces.InternalServices;
 
 namespace TransactionSyncAPI.Services.Realization
 {

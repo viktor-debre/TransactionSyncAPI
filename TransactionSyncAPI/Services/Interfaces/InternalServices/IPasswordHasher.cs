@@ -1,4 +1,4 @@
-﻿namespace TransactionSyncAPI.Services.Intarfaces.InternalServices
+﻿namespace TransactionSyncAPI.Services.Interfaces.InternalServices
 {
     public interface IPasswordHasher
     {

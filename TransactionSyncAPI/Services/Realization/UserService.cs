@@ -1,6 +1,6 @@
 ﻿using TransactionSyncAPI.DataAccess.Interfases;
 using TransactionSyncAPI.Models;
-using TransactionSyncAPI.Services.Intarfaces;
+using TransactionSyncAPI.Services.Interfaces;
 
 namespace TransactionSyncAPI.Services.Realization
 {

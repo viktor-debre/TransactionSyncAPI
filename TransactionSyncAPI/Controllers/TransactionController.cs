@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using TransactionSyncAPI.Services.Intarfaces;
+using TransactionSyncAPI.Services.Interfaces;
 
 namespace TransactionSyncAPI.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TransactionSyncAPI.Services.Intarfaces;
+using TransactionSyncAPI.Services.Interfaces;
 
 namespace TransactionSyncAPI.Controllers
 {

@@ -1,8 +1,8 @@
 ﻿using TransactionSyncAPI.DataAccess.Interfases;
 using TransactionSyncAPI.DataAccess;
-using TransactionSyncAPI.Services.Intarfaces;
+using TransactionSyncAPI.Services.Interfaces;
 using TransactionSyncAPI.Services.Realization;
-using TransactionSyncAPI.Services.Intarfaces.InternalServices;
+using TransactionSyncAPI.Services.Interfaces.InternalServices;
 using TransactionSyncAPI.Services.Realization.InternalServices;
 
 namespace TransactionSyncAPI

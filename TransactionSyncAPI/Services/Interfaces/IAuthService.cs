@@ -1,6 +1,6 @@
 ﻿using TransactionSyncAPI.Models;
 
-namespace TransactionSyncAPI.Services.Intarfaces
+namespace TransactionSyncAPI.Services.Interfaces
 {
     public interface IAuthService
     {
