@@ -29,9 +29,7 @@ namespace TransactionSyncAPI.Services.Realization
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("Email", user.Email),
-                        new Claim("Password", user.PasswordHash)
-
+                        new Claim("Email", user.Email)
                     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
