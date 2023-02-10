@@ -17,7 +17,7 @@ namespace TransactionSyncAPI.Services.Realization
         {
             firstName = firstName ?? string.Empty;
             lastName = lastName ?? string.Empty;
-            var sqlQuery = "SELECT * FROM users WHERE FirstName LIKE @FirstName AND LastName LIKE @LastName";
+            var sqlQuery = "SELECT * FROM users WHERE \"FirstName\" LIKE @FirstName AND \"LastName\" LIKE @LastName;";
             var parameters = new { FirstName = firstName + '%', LastName = lastName + '%' };
 
             var users = await _readDbConnection.QueryAsync<User>(sqlQuery, parameters);

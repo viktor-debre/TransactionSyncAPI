@@ -24,7 +24,7 @@ namespace TransactionSyncAPI.Services.Realization
 
         public async Task<IEnumerable<Transaction>> GetAllTransactionFromDb()
         {
-            var sqlQuery = "SELECT * FROM transactions";
+            var sqlQuery = "SELECT * FROM transactions;";
             var transactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery);
             return transactions;
         }
@@ -41,23 +41,20 @@ namespace TransactionSyncAPI.Services.Realization
 
         public async Task<IEnumerable<Transaction>> GetFilteredTransactions(IEnumerable<string> types = null, string? status = null)
         {
-            var parameters = new DynamicParameters();
-            parameters.Add("@Types", types);
-            parameters.Add("@Status", status);
-
+            var parameters = new { Types = types.ToArray(), Status = status };
 
             var sqlQuery = "SELECT * FROM transactions";
             if (types.Count() != 0 && status != null)
             {
-                sqlQuery += " WHERE Type IN @Types AND Status = @Status";
+                sqlQuery += " WHERE \"Type\" = ANY(@Types) AND \"Status\" = @Status;";
             }
             else if (types.Count() != 0)
             {
-                sqlQuery += " WHERE Type IN @Types";
+                sqlQuery += " WHERE \"Type\" = ANY(@Types);";
             }
             else if (status != null)
             {
-                sqlQuery += " WHERE Status = @Status";
+                sqlQuery += " WHERE \"Status\" = @Status;";
             }
 
             var transactions = await _readDbConnection.QueryAsync<Transaction>(sqlQuery, parameters);
@@ -67,13 +64,13 @@ namespace TransactionSyncAPI.Services.Realization
 
         public async Task<Transaction?> SetNewStatusById(int id, string status)
         {
-            var sqlUpdateQuery = "UPDATE transactions SET Status = @Status WHERE TransactionId = @Id";
+            var sqlUpdateQuery = "UPDATE transactions SET \"Status\" = @Status WHERE \"TransactionId\" = @Id;";
             var parameters = new { Status = status, Id = id };
             var rowAffected = await _writeDbConnection.ExecuteAsync(sqlUpdateQuery, parameters);
 
             if (rowAffected != 0)
             {
-                var sqlFindQuery = "SELECT * FROM transactions WHERE TransactionId = @Id";
+                var sqlFindQuery = "SELECT * FROM transactions WHERE \"TransactionId\" = @Id;";
                 var parameterForSearch = new { Id = id };
                 var transaction = await _readDbConnection.QueryFirstOrDefaultAsync<Transaction>(sqlFindQuery, parameterForSearch);
 
@@ -88,14 +85,14 @@ namespace TransactionSyncAPI.Services.Realization
             var sqlQuery = "SELECT * FROM transactions";
 
             string sqlQueryForSync = @"
-            MERGE transactions AS T
-            USING (VALUES (@TransactionId, @Content, @Status, @Type, @UserId)) as S(TransactionId, Content, Status, Type, UserId)
-            ON T.TransactionId = S.TransactionId
-            WHEN MATCHED THEN
-                UPDATE SET T.Content = S.Content, T.Status = S.Status, T.Type = S.Type, T.UserId = S.UserId
-            WHEN NOT MATCHED THEN
-                INSERT (TransactionId, Content, Status, Type, UserId)
-                Values (S.TransactionId, S.Content, S.Status, S.Type, S.UserId);";
+            INSERT INTO transactions (""TransactionId"", ""Content"", ""Status"", ""Type"", ""UserId"")
+            VALUES(@TransactionId, @Content, @Status, @Type, @UserId) 
+            ON CONFLICT (""TransactionId"") 
+            DO UPDATE SET 
+                ""TransactionId"" = @TransactionId,
+                ""Content"" = @Content,
+                ""Status"" = @Status,
+                ""Type"" = @Type;";
 
             foreach (var transaction in transactions)
             {

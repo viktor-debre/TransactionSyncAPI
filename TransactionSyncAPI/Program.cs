@@ -24,12 +24,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 //Connection string to database
-string connectionString = builder.Configuration.GetConnectionString("SqlServerConnectionStrings") ?? "";
+string connectionStringPostgresSql = builder.Configuration.GetConnectionString("PostgresSqlConnectionString") ?? "";
 
 //Add to dependency injection database context for entity framework core
 builder.Services.AddDbContext<TransactionDbContext>(option =>
 {
-    option.UseSqlServer(connectionString);
+    option.UseNpgsql(connectionStringPostgresSql);
 });
 
 //Add database context for Dapper
@@ -56,12 +56,12 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1qwerty1\"",
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement 
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new OpenApiSecurityScheme 
+            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference 
+                Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
@@ -78,7 +78,7 @@ app.UseSwagger();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-   
+
     app.UseSwaggerUI();
 }
 

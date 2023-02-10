@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.Data;
 using TransactionSyncAPI.DataAccess.Interfases;
 
@@ -10,7 +10,7 @@ namespace TransactionSyncAPI.DataAccess
         private readonly IDbConnection connection;
         public TransactionReadDbConnection(IConfiguration configuration)
         {
-            connection = new SqlConnection(configuration.GetConnectionString("SqlServerConnectionStrings"));
+            connection = new NpgsqlConnection(configuration.GetConnectionString("PostgresSqlConnectionString"));
         }
         public async Task<IReadOnlyList<T>> QueryAsync<T>(string sql, object param = null, IDbTransaction transaction = null, CancellationToken cancellationToken = default)
         {

@@ -18,7 +18,7 @@ namespace TransactionSyncAPI
             services.AddScoped<IUserService, UserService>();
 
             //internal services
-            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
         }
 
         public static void AddDapperDbConnections(IServiceCollection services)
